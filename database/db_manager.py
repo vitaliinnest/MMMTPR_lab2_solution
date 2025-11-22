@@ -122,6 +122,12 @@ class DatabaseManager:
             raise RuntimeError("Constraints not found")
         return LPConstraints(p_min=row[0], r_min=row[1], t_max=row[2])
 
+    def delete_model(self, model_id: int) -> None:
+        """Delete a model from the database."""
+        cur = self.conn.cursor()
+        cur.execute("DELETE FROM embedding_models WHERE id = ?", (model_id,))
+        self.conn.commit()
+
     def save_solution(self, solution: LPSolution, algorithm_name: str = "greedy") -> None:
         cur = self.conn.cursor()
         x1 = solution.x[0] if len(solution.x) > 0 else 0.0

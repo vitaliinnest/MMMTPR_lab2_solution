@@ -72,10 +72,12 @@ class ModelsTab:
         btn_update = ttk.Button(lower, text="Зберегти вибрану модель", command=self._save_selected_model)
         btn_reload = ttk.Button(lower, text="Оновити з БД", command=self.reload_models)
         btn_add = ttk.Button(lower, text="Додати нову модель", command=self._add_new_model)
+        btn_delete = ttk.Button(lower, text="Видалити вибрану модель", command=self._delete_selected_model)
 
         btn_update.grid(row=2, column=0, columnspan=2, pady=4)
         btn_reload.grid(row=2, column=2, columnspan=2, pady=4)
         btn_add.grid(row=2, column=4, columnspan=2, pady=4)
+        btn_delete.grid(row=2, column=6, columnspan=2, pady=4)
 
         self.refresh_tree()
 
@@ -262,3 +264,38 @@ class ModelsTab:
     def _reload_constraints(self):
         """Reload constraints from the database."""
         self._fill_constraints_entries()
+
+    def _delete_selected_model(self):
+        """Delete the selected model from the database."""
+        if self.selected_model_id is None:
+            messagebox.showwarning("Увага", "Оберіть модель у таблиці")
+            return
+        
+        # Get model name for confirmation
+        model_name = self.entry_name.get().strip()
+        
+        # Confirm deletion
+        result = messagebox.askyesno(
+            "Підтвердження видалення",
+            f"Ви впевнені, що хочете видалити модель '{model_name}'?\n\nЦю дію неможливо скасувати."
+        )
+        
+        if not result:
+            return
+        
+        try:
+            self.db.delete_model(self.selected_model_id)
+            self.selected_model_id = None
+            
+            # Clear entry fields
+            self.entry_name.delete(0, tk.END)
+            self.entry_var.delete(0, tk.END)
+            self.entry_cost.delete(0, tk.END)
+            self.entry_time.delete(0, tk.END)
+            self.entry_precision.delete(0, tk.END)
+            self.entry_recall.delete(0, tk.END)
+            
+            self.reload_models()
+            messagebox.showinfo("Готово", f"Модель '{model_name}' видалено")
+        except Exception as e:
+            messagebox.showerror("Помилка", f"Не вдалося видалити модель: {str(e)}")
