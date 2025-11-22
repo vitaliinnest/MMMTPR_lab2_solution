@@ -3,20 +3,6 @@ from models import EmbeddingModel, LPConstraints, LPSolution
 
 
 def greedy_solve(models: List[EmbeddingModel], constraints: LPConstraints, step: float = 0.01) -> LPSolution:
-    """
-    Greedy algorithm to solve the linear programming problem for embedding models.
-    
-    Args:
-        models: List of embedding models with their parameters
-        constraints: LP constraints (p_min, r_min, t_max)
-        step: Step size for the greedy algorithm (default: 0.01)
-    
-    Returns:
-        LPSolution with optimal x values and objective function value
-    
-    Raises:
-        RuntimeError: If no feasible solution is found
-    """
     n = len(models)
     x = [0.0] * n
     s = 0.0
@@ -77,20 +63,6 @@ def greedy_solve_with_trace(
     constraints: LPConstraints, 
     step: float = 0.01
 ) -> Tuple[LPSolution, List[Dict[str, Any]]]:
-    """
-    Greedy algorithm with step-by-step trace for visualization.
-    
-    Args:
-        models: List of embedding models with their parameters
-        constraints: LP constraints (p_min, r_min, t_max)
-        step: Step size for the greedy algorithm (default: 0.01)
-    
-    Returns:
-        Tuple of (LPSolution, trace) where trace is a list of step information
-    
-    Raises:
-        RuntimeError: If no feasible solution is found
-    """
     n = len(models)
     x = [0.0] * n
     s = 0.0
